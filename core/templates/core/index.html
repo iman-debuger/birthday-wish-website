@@ -1,0 +1,438 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <link rel="stylesheet" href="{% static 'core/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="background">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <!-- ========== PHASE 1: PASSWORD ========== -->
+    <main class="glass-container" id="puzzle-section">
+        <header>
+            <h1 class="gradient-text" style="font-size:2.5rem;">🔐 A Secret Awaits...</h1>
+            <p class="subtitle">Enter the secret 4-digit pin to begin your journey.</p>
+        </header>
+        <section class="puzzle-container">
+            <div class="pin-inputs">
+                <input type="password" maxlength="1" class="pin-box">
+                <input type="password" maxlength="1" class="pin-box">
+                <input type="password" maxlength="1" class="pin-box">
+                <input type="password" maxlength="1" class="pin-box">
+            </div>
+            <p class="error-msg" id="pin-error">Incorrect combination. Try again!</p>
+        </section>
+        <button class="cta-button" id="unlock-btn">Unlock 🔓</button>
+    </main>
+
+    <!-- ========== PHASE 2: CHALLENGE HUB ========== -->
+    <main class="glass-container hidden" id="challenge-hub">
+        <header style="margin-bottom:1.5rem;">
+            <div style="font-size:2.5rem;margin-bottom:.5rem;">🎂</div>
+            <h1 class="gradient-text" style="font-size:2rem;">Birthday Challenges!</h1>
+            <p class="subtitle">Complete all 4 to unlock your surprise.</p>
+        </header>
+
+        <!-- Progress Slots -->
+        <div class="progress-slots">
+            <div class="progress-slot" id="slot-0"><span class="slot-icon">🧩</span><span
+                    class="slot-label">Riddle</span><span class="slot-status">●</span></div>
+            <div class="progress-slot" id="slot-1"><span class="slot-icon">🎯</span><span
+                    class="slot-label">Puzzle</span><span class="slot-status">●</span></div>
+            <div class="progress-slot" id="slot-2"><span class="slot-icon">🔢</span><span
+                    class="slot-label">Math</span><span class="slot-status">●</span></div>
+            <div class="progress-slot" id="slot-3"><span class="slot-icon">🤖</span><span
+                    class="slot-label">Captcha</span><span class="slot-status">●</span></div>
+        </div>
+
+        <!-- Game Buttons -->
+        <div class="game-buttons">
+            <button class="game-btn" id="game-btn-0" onclick="openModal('riddle-modal')">
+                <span class="game-btn-icon">🧩</span><span class="game-btn-label">Riddle</span>
+            </button>
+            <button class="game-btn" id="game-btn-1" onclick="openModal('puzzle-modal')">
+                <span class="game-btn-icon">🎯</span><span class="game-btn-label">Puzzle</span>
+            </button>
+            <button class="game-btn" id="game-btn-2" onclick="openModal('math-modal')">
+                <span class="game-btn-icon">🔢</span><span class="game-btn-label">Math</span>
+            </button>
+            <button class="game-btn" id="game-btn-3" onclick="openModal('captcha-modal')">
+                <span class="game-btn-icon">🤖</span><span class="game-btn-label">Captcha</span>
+            </button>
+        </div>
+
+        <!-- Reveal Button (hidden until all done) -->
+        <div id="reveal-btn-wrap" class="hidden" style="margin-top:1.5rem;">
+            <button class="cta-button reveal-pulse" id="reveal-wish-btn">🎁 Reveal Birthday Wish!</button>
+        </div>
+    </main>
+
+    <!-- ========== MODAL: RIDDLE ========== -->
+    <div class="modal-overlay hidden" id="riddle-modal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('riddle-modal')">✕</button>
+            <div class="modal-icon">🧩</div>
+            <h2 class="modal-title">Solve the Riddle</h2>
+            <p class="modal-riddle-q" id="riddle-question"></p>
+            <p class="modal-hint" id="riddle-hint"></p>
+            <input type="text" class="modal-input" id="riddle-answer" placeholder="Your answer...">
+            <p class="error-msg" id="riddle-error">That's not right. Try again!</p>
+            <button class="cta-button" onclick="checkRiddle()">Submit Answer</button>
+        </div>
+    </div>
+
+    <!-- ========== MODAL: IMAGE ROTATION PUZZLE ========== -->
+    <div class="modal-overlay hidden" id="puzzle-modal">
+        <div class="modal-box" style="max-width:420px;">
+            <button class="modal-close" onclick="closeModal('puzzle-modal')">✕</button>
+            <div class="modal-icon">🖼️</div>
+            <h2 class="modal-title">Fix the Picture!</h2>
+            <p class="subtitle" style="margin-bottom:0.5rem;">Click the tiles to rotate them into the correct position.
+            </p>
+            <div class="slide-puzzle-meta">
+                <span id="slide-moves">Rotations: 0</span>
+                <button class="slide-shuffle-btn" onclick="shufflePuzzle()">🔀 Shuffle</button>
+            </div>
+            <div class="slide-puzzle-board" id="slide-board"></div>
+            <p class="modal-hint" style="margin-top:0.75rem;">💡 Click any tile to rotate it by 90 degrees.</p>
+        </div>
+    </div>
+
+    <!-- ========== MODAL: MATH ========== -->
+    <div class="modal-overlay hidden" id="math-modal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('math-modal')">✕</button>
+            <div class="modal-icon">🔢</div>
+            <h2 class="modal-title">Math Challenge</h2>
+            <p class="modal-riddle-q" id="math-question"></p>
+            <p class="modal-hint" id="math-hint"></p>
+            <input type="text" class="modal-input" id="math-answer" placeholder="Your answer..." inputmode="numeric">
+            <p class="error-msg" id="math-error">Not quite! Try again.</p>
+            <button class="cta-button" onclick="checkMath()">Submit Answer</button>
+        </div>
+    </div>
+
+    <!-- ========== MODAL: CAPTCHA ========== -->
+    <div class="modal-overlay hidden" id="captcha-modal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('captcha-modal')">✕</button>
+            <div class="modal-icon">🤖</div>
+            <h2 class="modal-title">Prove You're Human!</h2>
+            <p class="subtitle" style="margin-bottom:.5rem;">Type the text below exactly as shown:</p>
+            <div class="captcha-display" id="captcha-display"></div>
+            <p class="modal-hint" id="captcha-hint"></p>
+            <input type="text" class="modal-input" id="captcha-answer" placeholder="Type here..." autocomplete="off"
+                spellcheck="false">
+            <p class="error-msg" id="captcha-error">Doesn't match. Case-sensitive!</p>
+            <button class="cta-button" onclick="checkCaptcha()">Submit</button>
+        </div>
+    </div>
+
+    <!-- ========== MODAL: BIRTHDAY WISH ========== -->
+    <div class="modal-overlay hidden" id="wish-modal">
+        <div class="modal-box wish-modal-box">
+            <button class="modal-close" id="wish-close-btn">✕</button>
+            <div class="wish-confetti-top">🎉 🎊 🎈 🎁 🎂 🎊 🎉</div>
+            <h2 class="gradient-text" style="font-size:2rem;margin-bottom:1rem;">Happy Birthday! 🎂</h2>
+            <p class="wish-message" id="wish-message-text"></p>
+            <div class="wish-video-container">
+                <video id="wish-video" src="" controls playsinline style="width:100%; height:100%; border-radius:12px;"></video>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =============================================
+        // DEVELOPER CONFIG — Edit only this section!
+        // =============================================
+        const CONFIG = {
+            pin: "2409",  // ← 4-digit unlock password
+
+            riddle: {
+                question: "Say my Name",
+                answer: "iman",          // ← Correct answer (case-insensitive)
+                //hint: "💡 Think about mountains and valleys..."
+            },
+
+            puzzle: {
+                // ← Your photo is saved at core/static/core/puzzle.jpg
+                // To use your own photo: replace puzzle.jpg in core/static/core/ and refresh.
+                imageUrl: "/static/core/puzzle.jpg",
+                gridSize: 2  // 2 = 2×2 grid (4 tiles) — easy! Change to 3 for harder.
+            },
+
+            math: {
+                question: "What is (15 + 5) × 2 − 16?",
+                answer: "24",               // ← Correct answer as a string
+                hint: "💡 Solve brackets first, then multiply, then subtract."
+            },
+
+            captcha: {
+                text: "HappyBirthday!",    // ← Exact text to type (case-sensitive)
+                hint: "💡 Case-sensitive! Include the exclamation mark."
+            },
+
+            wish: {
+                message: "You are absolutely one of a kind, and having you in my life is the greatest gift! May this birthday be the beginning of an incredible year filled with joy, adventures, love, and everything your heart desires. Here's to you — always shining bright! 🌟🎉",
+                // ← Your video is saved at core/static/core/Birthday.mp4
+                videoUrl: "/static/core/Birthday.mp4"
+            }
+        };
+        // =============================================
+        // END OF CONFIG — Do not edit below this line
+        // =============================================
+
+        // --- State ---
+        const completed = [false, false, false, false];
+
+        // --- PIN Logic ---
+        const pinBoxes = document.querySelectorAll('.pin-box');
+        pinBoxes.forEach((box, i) => {
+            box.addEventListener('input', e => {
+                if (e.target.value.length === 1 && i < pinBoxes.length - 1) pinBoxes[i + 1].focus();
+                document.getElementById('pin-error').style.opacity = 0;
+            });
+            box.addEventListener('keydown', e => {
+                if (e.key === 'Backspace' && e.target.value === '' && i > 0) pinBoxes[i - 1].focus();
+            });
+        });
+
+        document.getElementById('unlock-btn').addEventListener('click', () => {
+            let pin = '';
+            pinBoxes.forEach(b => pin += b.value);
+            if (pin === CONFIG.pin) {
+                const ps = document.getElementById('puzzle-section');
+                ps.classList.add('fade-out');
+                setTimeout(() => {
+                    ps.style.display = 'none';
+                    const hub = document.getElementById('challenge-hub');
+                    hub.classList.remove('hidden');
+                    hub.classList.add('fade-in');
+                }, 500);
+            } else {
+                document.getElementById('pin-error').style.opacity = 1;
+                const ps = document.getElementById('puzzle-section');
+                ps.classList.add('shake');
+                setTimeout(() => ps.classList.remove('shake'), 500);
+                pinBoxes.forEach(b => b.value = '');
+                pinBoxes[0].focus();
+            }
+        });
+
+        // --- Modal Helpers ---
+        function openModal(id) {
+            const el = document.getElementById(id);
+            el.classList.remove('hidden');
+            void el.offsetWidth; // force reflow for animation replay
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // --- Progress Tracker ---
+        function markComplete(index) {
+            if (completed[index]) return;
+            completed[index] = true;
+            const slot = document.getElementById('slot-' + index);
+            slot.classList.add('slot-done');
+            slot.querySelector('.slot-status').textContent = '✓';
+            const btn = document.getElementById('game-btn-' + index);
+            btn.classList.add('game-btn-done');
+            btn.disabled = true;
+            if (completed.every(Boolean)) {
+                setTimeout(() => {
+                    const wrap = document.getElementById('reveal-btn-wrap');
+                    wrap.classList.remove('hidden');
+                    triggerMiniConfetti();
+                }, 400);
+            }
+        }
+
+        // ---- GAME 1: RIDDLE ----
+        document.getElementById('riddle-question').textContent = CONFIG.riddle.question;
+        document.getElementById('riddle-hint').textContent = CONFIG.riddle.hint;
+
+        function checkRiddle() {
+            const val = document.getElementById('riddle-answer').value.trim().toLowerCase();
+            if (val === CONFIG.riddle.answer.trim().toLowerCase()) {
+                closeModal('riddle-modal');
+                markComplete(0);
+                document.getElementById('riddle-answer').value = '';
+                document.getElementById('riddle-error').style.opacity = 0;
+            } else {
+                showError('riddle-error', 'riddle-answer');
+            }
+        }
+        document.getElementById('riddle-answer').addEventListener('keydown', e => { if (e.key === 'Enter') checkRiddle(); });
+
+        // ---- GAME 2: IMAGE ROTATION PUZZLE ----
+        (function () {
+            const N = CONFIG.puzzle.gridSize;
+            const TOTAL = N * N;
+            const IMG = CONFIG.puzzle.imageUrl;
+
+            let rotations = []; // Array of rotation values (0, 1, 2, 3 corresponding to 0, 90, 180, 270 deg)
+            let moves = 0;
+            let solved = false;
+
+            const board = document.getElementById('slide-board');
+            board.style.width = '360px';
+            board.style.height = '360px';
+
+            function buildBoard() {
+                board.innerHTML = '';
+                board.style.gridTemplateColumns = `repeat(${N}, 1fr)`;
+                for (let i = 0; i < TOTAL; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'slide-tile';
+                    const row = Math.floor(i / N);
+                    const col = i % N;
+
+                    cell.style.backgroundImage = `url('${IMG}')`;
+                    cell.style.backgroundSize = `${N * 100}% ${N * 100}%`;
+                    cell.style.backgroundPosition = `${col * 100 / (N - 1)}% ${row * 100 / (N - 1)}%`;
+                    cell.style.transform = `rotate(${rotations[i] * 90}deg)`;
+
+                    cell.addEventListener('click', () => rotateTile(i, cell));
+                    board.appendChild(cell);
+                }
+            }
+
+            function rotateTile(i, cell) {
+                if (solved) return;
+                rotations[i] = (rotations[i] + 1) % 4;
+                cell.style.transform = `rotate(${rotations[i] * 90}deg)`;
+                moves++;
+                document.getElementById('slide-moves').textContent = 'Rotations: ' + moves;
+                checkSolved();
+            }
+
+            function checkSolved() {
+                if (rotations.every(r => r === 0)) {
+                    solved = true;
+                    board.classList.add('slide-solved');
+                    setTimeout(() => {
+                        closeModal('puzzle-modal');
+                        markComplete(1);
+                    }, 900);
+                }
+            }
+
+            window.shufflePuzzle = function () {
+                solved = false;
+                moves = 0;
+                document.getElementById('slide-moves').textContent = 'Rotations: 0';
+                board.classList.remove('slide-solved');
+
+                // Shuffle rotations (ensure it's not already solved)
+                do {
+                    rotations = Array.from({ length: TOTAL }, () => Math.floor(Math.random() * 4));
+                } while (rotations.every(r => r === 0));
+
+                buildBoard();
+            };
+
+            // Initialise on first open
+            document.getElementById('game-btn-1').addEventListener('click', () => {
+                if (moves === 0 && rotations.length === 0) shufflePuzzle();
+            });
+
+            // Init immediately
+            shufflePuzzle();
+        })();
+
+        // ---- GAME 3: MATH ----
+        document.getElementById('math-question').textContent = CONFIG.math.question;
+        document.getElementById('math-hint').textContent = CONFIG.math.hint;
+
+        function checkMath() {
+            const val = document.getElementById('math-answer').value.trim();
+            if (val === CONFIG.math.answer.trim()) {
+                closeModal('math-modal');
+                markComplete(2);
+                document.getElementById('math-answer').value = '';
+                document.getElementById('math-error').style.opacity = 0;
+            } else {
+                showError('math-error', 'math-answer');
+            }
+        }
+        document.getElementById('math-answer').addEventListener('keydown', e => { if (e.key === 'Enter') checkMath(); });
+
+        // ---- GAME 4: CAPTCHA ----
+        document.getElementById('captcha-display').textContent = CONFIG.captcha.text;
+        document.getElementById('captcha-hint').textContent = CONFIG.captcha.hint;
+
+        function checkCaptcha() {
+            const val = document.getElementById('captcha-answer').value;
+            if (val === CONFIG.captcha.text) {
+                closeModal('captcha-modal');
+                markComplete(3);
+                document.getElementById('captcha-answer').value = '';
+                document.getElementById('captcha-error').style.opacity = 0;
+            } else {
+                showError('captcha-error', 'captcha-answer');
+            }
+        }
+        document.getElementById('captcha-answer').addEventListener('keydown', e => { if (e.key === 'Enter') checkCaptcha(); });
+
+        // ---- BIRTHDAY WISH ----
+        document.getElementById('wish-message-text').textContent = CONFIG.wish.message;
+
+        document.getElementById('reveal-wish-btn').addEventListener('click', () => {
+            openModal('wish-modal');
+            const video = document.getElementById('wish-video');
+            video.src = CONFIG.wish.videoUrl;
+            video.play().catch(e => console.log("Autoplay prevented:", e));
+        });
+
+        document.getElementById('wish-close-btn').addEventListener('click', () => {
+            closeModal('wish-modal');
+            const video = document.getElementById('wish-video');
+            video.pause();
+            video.currentTime = 0; // reset video
+        });
+
+        // ---- HELPERS ----
+        function showError(errorId, inputId) {
+            document.getElementById(errorId).style.opacity = 1;
+            const input = document.getElementById(inputId);
+            input.classList.add('shake');
+            setTimeout(() => input.classList.remove('shake'), 500);
+        }
+
+        function triggerMiniConfetti() {
+            const colors = ['#a855f7', '#ec4899', '#fcd34d', '#34d399', '#60a5fa'];
+            for (let i = 0; i < 80; i++) {
+                const c = document.createElement('div');
+                c.classList.add('confetti');
+                c.style.left = Math.random() * 100 + 'vw';
+                c.style.animationDelay = Math.random() * 2.5 + 's';
+                c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                c.style.width = (Math.random() * 8 + 6) + 'px';
+                c.style.height = (Math.random() * 8 + 6) + 'px';
+                document.body.appendChild(c);
+                setTimeout(() => c.remove(), 5000);
+            }
+        }
+
+        // Ripple on CTA buttons
+        document.querySelectorAll('.cta-button').forEach(btn => {
+            btn.addEventListener('mousemove', e => {
+                const r = btn.getBoundingClientRect();
+                btn.style.setProperty('--x', (e.clientX - r.left) + 'px');
+                btn.style.setProperty('--y', (e.clientY - r.top) + 'px');
+            });
+        });
+    </script>
+</body>
+
+</html>
