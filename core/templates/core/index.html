@@ -44,29 +44,29 @@
 
         <!-- Progress Slots -->
         <div class="progress-slots">
-            <div class="progress-slot" id="slot-0"><span class="slot-icon">🧩</span><span
-                    class="slot-label">Riddle</span><span class="slot-status">●</span></div>
-            <div class="progress-slot" id="slot-1"><span class="slot-icon">🎯</span><span
-                    class="slot-label">Puzzle</span><span class="slot-status">●</span></div>
-            <div class="progress-slot" id="slot-2"><span class="slot-icon">🔢</span><span
+            <div class="progress-slot" id="slot-0"><span class="slot-icon">🔢</span><span
                     class="slot-label">Math</span><span class="slot-status">●</span></div>
-            <div class="progress-slot" id="slot-3"><span class="slot-icon">🤖</span><span
+            <div class="progress-slot" id="slot-1"><span class="slot-icon">🧩</span><span
+                    class="slot-label">Riddle</span><span class="slot-status">●</span></div>
+            <div class="progress-slot" id="slot-2"><span class="slot-icon">🤖</span><span
                     class="slot-label">Captcha</span><span class="slot-status">●</span></div>
+            <div class="progress-slot" id="slot-3"><span class="slot-icon">🎯</span><span
+                    class="slot-label">Puzzle</span><span class="slot-status">●</span></div>
         </div>
 
         <!-- Game Buttons -->
         <div class="game-buttons">
-            <button class="game-btn" id="game-btn-0" onclick="openModal('riddle-modal')">
-                <span class="game-btn-icon">🧩</span><span class="game-btn-label">Riddle</span>
-            </button>
-            <button class="game-btn" id="game-btn-1" onclick="openModal('puzzle-modal')">
-                <span class="game-btn-icon">🎯</span><span class="game-btn-label">Puzzle</span>
-            </button>
-            <button class="game-btn" id="game-btn-2" onclick="openModal('math-modal')">
+            <button class="game-btn" id="game-btn-0" onclick="openModal('math-modal')">
                 <span class="game-btn-icon">🔢</span><span class="game-btn-label">Math</span>
             </button>
-            <button class="game-btn" id="game-btn-3" onclick="openModal('captcha-modal')">
+            <button class="game-btn" id="game-btn-1" onclick="openModal('riddle-modal')">
+                <span class="game-btn-icon">🧩</span><span class="game-btn-label">Riddle</span>
+            </button>
+            <button class="game-btn" id="game-btn-2" onclick="openModal('captcha-modal')">
                 <span class="game-btn-icon">🤖</span><span class="game-btn-label">Captcha</span>
+            </button>
+            <button class="game-btn" id="game-btn-3" onclick="openModal('puzzle-modal')">
+                <span class="game-btn-icon">🎯</span><span class="game-btn-label">Puzzle</span>
             </button>
         </div>
 
@@ -266,7 +266,7 @@
             const val = document.getElementById('riddle-answer').value.trim().toLowerCase();
             if (val === CONFIG.riddle.answer.trim().toLowerCase()) {
                 closeModal('riddle-modal');
-                markComplete(0);
+                markComplete(1);
                 document.getElementById('riddle-answer').value = '';
                 document.getElementById('riddle-error').style.opacity = 0;
             } else {
@@ -323,7 +323,7 @@
                     board.classList.add('slide-solved');
                     setTimeout(() => {
                         closeModal('puzzle-modal');
-                        markComplete(1);
+                        markComplete(3); // Puzzle is now index 3
                     }, 2500); // Wait 2.5s for user to enjoy the revealed image
                 }
             }
@@ -343,7 +343,7 @@
             };
 
             // Initialise on first open
-            document.getElementById('game-btn-1').addEventListener('click', () => {
+            document.getElementById('game-btn-3').addEventListener('click', () => {
                 if (moves === 0 && rotations.length === 0) shufflePuzzle();
             });
 
@@ -359,7 +359,7 @@
             const val = document.getElementById('math-answer').value.trim();
             if (val === CONFIG.math.answer.trim()) {
                 closeModal('math-modal');
-                markComplete(2);
+                markComplete(0);
                 document.getElementById('math-answer').value = '';
                 document.getElementById('math-error').style.opacity = 0;
             } else {
@@ -376,7 +376,7 @@
             const val = document.getElementById('captcha-answer').value;
             if (val === CONFIG.captcha.text) {
                 closeModal('captcha-modal');
-                markComplete(3);
+                markComplete(2);
                 document.getElementById('captcha-answer').value = '';
                 document.getElementById('captcha-error').style.opacity = 0;
             } else {
