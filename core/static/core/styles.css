@@ -203,24 +203,28 @@ header {
    CHALLENGE HUB — GAME BUTTONS
    ========================================= */
 .game-buttons {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    max-width: 320px;
+    margin: 0 auto;
 }
 
 .game-btn {
     background: rgba(168,85,247,0.12);
     border: 1.5px solid rgba(168,85,247,0.3);
     border-radius: 16px;
-    padding: 1.25rem 1rem;
+    padding: 1.2rem 1.5rem;
     color: var(--text-color);
     cursor: pointer;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 0.6rem;
+    justify-content: flex-start;
+    gap: 1.5rem;
     transition: all 0.3s ease;
     font-family: 'Outfit', sans-serif;
+    width: 100%;
 }
 
 .game-btn:hover:not(:disabled) {
@@ -232,8 +236,8 @@ header {
 
 .game-btn:active:not(:disabled) { transform: translateY(0); }
 
-.game-btn-icon { font-size: 2rem; }
-.game-btn-label { font-size: 1rem; font-weight: 600; }
+.game-btn-icon { font-size: 1.8rem; display: flex; align-items: center;}
+.game-btn-label { font-size: 1.1rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
 
 .game-btn.game-btn-done {
     background: rgba(34,197,94,0.15);
