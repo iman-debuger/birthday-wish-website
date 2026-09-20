@@ -197,42 +197,7 @@ header {
     50%       { box-shadow: 0 0 0 15px rgba(168,85,247,0); }
 }
 
-/* =========================================
-   CHALLENGE HUB — PROGRESS SLOTS
-   ========================================= */
-.progress-slots {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-}
 
-.progress-slot {
-    background: rgba(255,255,255,0.04);
-    border: 1.5px solid rgba(255,255,255,0.12);
-    border-radius: 12px;
-    padding: 0.75rem 0.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.35rem;
-    transition: all 0.4s ease;
-}
-
-.slot-icon { font-size: 1.5rem; }
-.slot-label { font-size: 0.7rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-.slot-status { font-size: 0.9rem; color: #475569; }
-
-.progress-slot.slot-done {
-    background: rgba(34, 197, 94, 0.15);
-    border-color: var(--success);
-}
-
-.progress-slot.slot-done .slot-status {
-    color: var(--success);
-    font-size: 1.1rem;
-    font-weight: 700;
-}
 
 /* =========================================
    CHALLENGE HUB — GAME BUTTONS
@@ -271,10 +236,11 @@ header {
 .game-btn-label { font-size: 1rem; font-weight: 600; }
 
 .game-btn.game-btn-done {
-    background: rgba(34,197,94,0.1);
+    background: rgba(34,197,94,0.15);
     border-color: var(--success);
-    opacity: 0.7;
+    opacity: 1;
     cursor: not-allowed;
+    box-shadow: 0 0 15px rgba(34,197,94,0.3);
 }
 
 .game-btn.game-btn-done .game-btn-icon::after {

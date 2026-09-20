@@ -42,17 +42,6 @@
             <p class="subtitle">Complete all 4 to unlock your surprise.</p>
         </header>
 
-        <!-- Progress Slots -->
-        <div class="progress-slots">
-            <div class="progress-slot" id="slot-0"><span class="slot-icon">🔢</span><span
-                    class="slot-label">Math</span><span class="slot-status">●</span></div>
-            <div class="progress-slot" id="slot-1"><span class="slot-icon">🧩</span><span
-                    class="slot-label">Riddle</span><span class="slot-status">●</span></div>
-            <div class="progress-slot" id="slot-2"><span class="slot-icon">🤖</span><span
-                    class="slot-label">Captcha</span><span class="slot-status">●</span></div>
-            <div class="progress-slot" id="slot-3"><span class="slot-icon">🎯</span><span
-                    class="slot-label">Puzzle</span><span class="slot-status">●</span></div>
-        </div>
 
         <!-- Game Buttons -->
         <div class="game-buttons">
@@ -243,9 +232,6 @@
         function markComplete(index) {
             if (completed[index]) return;
             completed[index] = true;
-            const slot = document.getElementById('slot-' + index);
-            slot.classList.add('slot-done');
-            slot.querySelector('.slot-status').textContent = '✓';
             const btn = document.getElementById('game-btn-' + index);
             btn.classList.add('game-btn-done');
             btn.disabled = true;
